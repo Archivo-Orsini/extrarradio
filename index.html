@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construye tu propio extrarradio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="./img/titulo.png" alt="Contruye tu propio extrarradio"/>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="gallery-section">
+                    <div class="gallery-grid" id="galleryGrid">
+                    </div>
+                </div>
+
+                <div class="instructions">
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="canvas-container">
+                    <div class="drop-zone" id="dropZone">
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        descargar
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        reiniciar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>

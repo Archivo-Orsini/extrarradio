@@ -1,0 +1,501 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.container {
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.header img {
+  height: 200px;
+  max-width: 100%;
+}
+
+.header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.header p {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gallery-section {
+  background: #f8f9fa;
+}
+
+.gallery-section h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.gallery-grid {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 910;
+  background-image: url("/img/rejilla.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  max-height: 600px;
+}
+
+.grid-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: all 0.3s ease;
+  padding: 5px;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 8px rgba(43, 43, 43, 0.4));
+  z-index: 10;
+}
+
+.grid-item:active {
+  cursor: grabbing;
+}
+
+.grid-item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.item-1 {
+  left: 3%;
+  top: 9%;
+  width: 10%;
+  height: 21%;
+}
+.item-2 {
+  left: 15%;
+  top: 9%;
+  width: 12%;
+  height: 20%;
+}
+.item-3 {
+  left: 28%;
+  top: 9%;
+  width: 12%;
+  height: 20%;
+}
+.item-4 {
+  left: 41%;
+  top: 9%;
+  width: 12%;
+  height: 20%;
+}
+.item-5 {
+  left: 51%;
+  top: 3%;
+  width: 14%;
+  height: 34%;
+}
+
+.item-6 {
+  left: 62%;
+  top: 0;
+  width: 22%;
+  height: 34%;
+}
+
+.item-7 {
+  left: 84%;
+  top: 6%;
+  width: 12%;
+  height: 15%;
+}
+
+.item-8 {
+  left: 2%;
+  top: 30%;
+  width: 13%;
+  height: 16%;
+}
+
+.item-9 {
+  left: 13%;
+  top: 25%;
+  width: 18%;
+  height: 24%;
+}
+
+.item-10 {
+  left: 28%;
+  top: 19%;
+  width: 31%;
+  height: 41%;
+}
+
+.item-11 {
+  left: 49%;
+  top: 30%;
+  width: 34%;
+  height: 15%;
+}
+
+.item-12 {
+  left: 3%;
+  top: 44%;
+  width: 10%;
+  height: 15%;
+}
+
+.item-13 {
+  left: 13%;
+  top: 36%;
+  width: 18%;
+  height: 24%;
+}
+
+.item-14 {
+  left: 28%;
+  top: 41%;
+  width: 24%;
+  height: 23%;
+}
+
+.item-15 {
+  left: 50%;
+  top: 39%;
+  width: 12%;
+  height: 20%;
+}
+
+.item-16 {
+  left: 65%;
+  top: 27%;
+  width: 22%;
+  height: 18%;
+}
+.item-17 {
+  left: 78%;
+  top: 25%;
+  width: 23%;
+  height: 18%;
+}
+
+.item-18 {
+  left: 2%;
+  top: 54%;
+  width: 15%;
+  height: 26%;
+}
+
+.item-19 {
+  left: 29%;
+  top: 53%;
+  width: 25%;
+  height: 30%;
+}
+
+.item-20 {
+  left: 51%;
+  top: 58%;
+  width: 13%;
+  height: 20%;
+}
+
+.item-21 {
+  left: 56%;
+  top: 41%;
+  width: 30%;
+  height: 24%;
+}
+
+.item-22 {
+  left: 15%;
+  top: 42%;
+  width: 14%;
+  height: 28%;
+}
+
+.item-23 {
+  left: 15%;
+  top: 56%;
+  width: 14%;
+  height: 23%;
+}
+
+.item-24 {
+  left: 77%;
+  top: 40%;
+  width: 25%;
+  height: 18%;
+}
+
+.item-25 {
+  left: 54%;
+  top: 54%;
+  width: 37%;
+  height: 21%;
+}
+
+.item-26 {
+  left: 76%;
+  top: 53%;
+  width: 28%;
+  height: 20%;
+}
+
+.item-27 {
+  left: 2%;
+  top: 81%;
+  width: 18%;
+  height: 17%;
+}
+.item-28 {
+  left: 21%;
+  top: 81%;
+  width: 14%;
+  height: 17%;
+}
+.item-29 {
+  left: 36%;
+  top: 77%;
+  width: 15%;
+  height: 20%;
+}
+.item-30 {
+  left: 50%;
+  top: 75%;
+  width: 11%;
+  height: 24%;
+}
+.item-31 {
+  left: 61%;
+  top: 72%;
+  width: 13%;
+  height: 23%;
+}
+.item-32 {
+  left: 71%;
+  top: 72%;
+  width: 13%;
+  height: 22%;
+}
+.item-33 {
+  left: 82%;
+  top: 69%;
+  width: 14%;
+  height: 31%;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.canvas-container {
+  background: #f8f9fa;
+  flex: 1;
+}
+
+.canvas-container h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+.drop-zone {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("/img/escena.jpg");
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.drop-zone.drag-over {
+  background-color: #ccc;
+}
+
+.dropped-element {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  transition: box-shadow 0.2s;
+}
+
+.dropped-element:hover {
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.dropped-element.selected {
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.dropped-element img {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(42, 42, 42, 0.2));
+}
+
+.delete-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background: #ccc;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+  font-size: 18px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.delete-btn:hover,
+.resize-handle:hover {
+  transform: scale(1.1);
+}
+
+.dropped-element:hover .delete-btn,
+.dropped-element.selected .delete-btn {
+  display: flex;
+}
+
+.resize-handle {
+  position: absolute;
+  color: white;
+  border: 1px solid white;
+  bottom: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: #ccc;
+  cursor: nwse-resize;
+  display: none;
+  z-index: 11;
+}
+
+.resize-handle::before {
+  content: "↘";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.dropped-element:hover .delete-btn,
+.dropped-element.selected .delete-btn,
+.dropped-element:hover .resize-handle,
+.dropped-element.selected .resize-handle {
+  display: flex;
+}
+
+.controls {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 15px 30px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 150px;
+}
+
+.btn-primary {
+  color: black;
+}
+
+.btn-secondary {
+  background: #f1f2f6;
+  color: red;
+}
+
+.instructions {
+  padding: 15px;
+  font-size: 0.9em;
+  color: #555;
+  line-height: 1.6;
+}
+
+@media (max-width: 1400px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
+    max-height: 500px;
+  }
+
+  .drop-zone {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8em;
+  }
+
+  .header p {
+    font-size: 0.9em;
+  }
+
+  .main-content {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .gallery-grid {
+    max-height: 400px;
+  }
+
+  .drop-zone {
+    height: 400px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+}
