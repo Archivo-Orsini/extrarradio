@@ -211,10 +211,23 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("touchmove", (e) => {
   if (!e.touches[0]) return;
   
-  // Buscar el elemento que está siendo tocado
   const touch = e.touches[0];
-  const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
   
+  // Si ya hay un elemento siendo arrastrado, moverlo
+  if (currentDraggingElement) {
+    const data = elementData.get(currentDraggingElement);
+    const dx = touch.clientX - data.currentX;
+    const dy = touch.clientY - data.currentY;
+
+    currentDraggingElement.style.left = data.initialX + dx + "px";
+    currentDraggingElement.style.top = data.initialY + dy + "px";
+    
+    e.preventDefault();
+    return;
+  }
+  
+  // Si no hay elemento arrastrándose, buscar si se debe empezar a arrastrar
+  const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
   if (!touchedElement) return;
   
   const droppedElement = touchedElement.closest('.dropped-element');
