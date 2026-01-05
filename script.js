@@ -131,6 +131,7 @@ function createDroppedElement(data, x, y) {
 function makeDraggable(element) {
   let isDragging = false;
   let currentX, currentY, initialX, initialY;
+  let dragStartTime = 0;
 
   // MOUSE (desktop)
   element.addEventListener("mousedown", (e) => {
@@ -138,6 +139,15 @@ function makeDraggable(element) {
     if (e.target.classList.contains("resize-handle")) return;
 
     isDragging = true;
+    dragStartTime = Date.now();
+    
+    // Remover selected de todos los elementos
+    document.querySelectorAll('.dropped-element').forEach(el => {
+      if (el !== element) {
+        el.classList.remove('selected');
+      }
+    });
+    
     element.classList.add("selected");
 
     const rect = element.getBoundingClientRect();
@@ -152,13 +162,17 @@ function makeDraggable(element) {
   });
 
   // TOUCH (móvil)
+  let touchStartTime = 0;
+  let hasMoved = false;
+  
   element.addEventListener("touchstart", (e) => {
+    // Si toca el botón delete o resize, no hacer nada
     if (e.target.classList.contains("delete-btn")) return;
     if (e.target.classList.contains("resize-handle")) return;
 
-    isDragging = true;
-    element.classList.add("selected");
-
+    touchStartTime = Date.now();
+    hasMoved = false;
+    
     const touch = e.touches[0];
     const rect = element.getBoundingClientRect();
     const parentRect = dropZone.getBoundingClientRect();
@@ -182,14 +196,20 @@ function makeDraggable(element) {
   });
 
   document.addEventListener("touchmove", (e) => {
-    if (!isDragging) return;
-
+    if (!e.touches[0]) return;
+    
     const touch = e.touches[0];
     const dx = touch.clientX - currentX;
     const dy = touch.clientY - currentY;
 
-    element.style.left = initialX + dx + "px";
-    element.style.top = initialY + dy + "px";
+    // Si se movió más de 5px, considerarlo drag
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      hasMoved = true;
+      isDragging = true;
+      
+      element.style.left = initialX + dx + "px";
+      element.style.top = initialY + dy + "px";
+    }
 
     e.preventDefault();
   }, { passive: false });
@@ -197,15 +217,36 @@ function makeDraggable(element) {
   document.addEventListener("mouseup", () => {
     if (isDragging) {
       isDragging = false;
-      element.classList.remove("selected");
     }
   });
 
-  document.addEventListener("touchend", () => {
-    if (isDragging) {
-      isDragging = false;
-      element.classList.remove("selected");
+  document.addEventListener("touchend", (e) => {
+    const touchDuration = Date.now() - touchStartTime;
+    
+    // Si fue un tap rápido sin movimiento
+    if (!hasMoved && touchDuration < 300) {
+      // Toggle: si ya está selected, quitarlo; si no, ponerlo
+      if (element.classList.contains('selected')) {
+        element.classList.remove('selected');
+      } else {
+        // Remover selected de todos los demás
+        document.querySelectorAll('.dropped-element').forEach(el => {
+          el.classList.remove('selected');
+        });
+        element.classList.add('selected');
+      }
+    } else if (hasMoved) {
+      // Si fue un drag, mantener selected
+      document.querySelectorAll('.dropped-element').forEach(el => {
+        if (el !== element) {
+          el.classList.remove('selected');
+        }
+      });
+      element.classList.add('selected');
     }
+    
+    isDragging = false;
+    hasMoved = false;
   });
 }
 

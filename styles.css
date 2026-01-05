@@ -613,3 +613,16 @@ li {
     font-size: 14px;
   }
 }
+
+/* ==================== MOSTRAR CONTROLES EN MÓVIL ==================== */
+@media (max-width: 768px) {
+  .dropped-element.selected .delete-btn,
+  .dropped-element.selected .resize-handle {
+    display: flex !important;
+  }
+  
+  .dropped-element .delete-btn,
+  .dropped-element .resize-handle {
+    display: none;
+  }
+}
