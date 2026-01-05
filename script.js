@@ -1,7 +1,6 @@
 const galleryGrid = document.getElementById("galleryGrid");
 const dropZone = document.getElementById("dropZone");
 const downloadBtn = document.getElementById("downloadBtn");
-const clearBtn = document.getElementById("clearBtn");
 
 // Datos de los elementos
 const elements = [
@@ -246,12 +245,6 @@ function deleteElement(elementId) {
   }
 }
 
-// Limpiar lienzo
-clearBtn.addEventListener("click", () => {
-  if (confirm("¿Estás seguro de que quieres limpiar el lienzo?")) {
-    dropZone.innerHTML = "";
-  }
-});
 
 // Descargar composición
 downloadBtn.addEventListener("click", async () => {
@@ -287,3 +280,52 @@ downloadBtn.addEventListener("click", async () => {
     alert("Hubo un error al generar la imagen. Por favor, inténtalo de nuevo.");
   }
 });
+
+// Funciones para el menú y artículo
+const showMenu = () => {
+  const menu = document.querySelector(".hidden-menu");
+  const article = document.querySelector(".article");
+  const tab = document.querySelector(".article-tab");
+
+  if (menu.style.display === "none" || menu.style.display === "") {
+    menu.style.display = "flex";
+    article.style.display = "none";
+    if (tab) tab.style.display = "none";
+  } else {
+    menu.style.display = "none";
+  }
+};
+
+const showInfo = () => {
+  const article = document.querySelector(".article");
+  const menu = document.querySelector(".hidden-menu");
+  const tab = document.querySelector(".article-tab");
+
+  if (article.style.display === "none" || article.style.display === "") {
+    article.style.display = "block";
+    menu.style.display = "none";
+    if (tab) tab.style.display = "none";
+  } else {
+    article.style.display = "none";
+  }
+};
+
+const minimizeArticle = () => {
+  const article = document.querySelector(".article");
+  const tab = document.querySelector(".article-tab");
+  
+  if (article && tab) {
+    article.style.display = "none";
+    tab.style.display = "block";
+  }
+};
+
+const restoreArticle = () => {
+  const article = document.querySelector(".article");
+  const tab = document.querySelector(".article-tab");
+  
+  if (article && tab) {
+    article.style.display = "block";
+    tab.style.display = "none";
+  }
+};

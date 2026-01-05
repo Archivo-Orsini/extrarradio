@@ -10,9 +10,74 @@
 </head>
 
 <body>
+    <header>
+        <nav>
+            <div>
+                <a class="title" href="https://archivoorsini.com/">ARCHIVO ORSINI</a>
+            </div>
+            <div class="item-wrapper">
+                <li id="menu-item-250" class="item menu-item">
+                    <a href="https://archivoorsini.com/">Archivo</a>
+                </li>
+                <li id="menu-item-252" class="item menu-item">
+                    <a href="https://archivoorsini.com/colaboradoras/">Colaboradoras</a>
+                </li>
+                <li id="menu-item-251" class="item menu-item">
+                    <a href="https://archivoorsini.com/about/">About</a>
+                </li>
+            </div>
+            <button onclick="showMenu()" id="equis" class="menuButton">Menú</button>
+        </nav>
+
+        <div class="hidden-menu">
+            <button class="item" onclick="showInfo()">About Construye tu extrarradio</button>
+            <a class="item" href="https://archivoorsini.com/">Archivo</a>
+            <a class="item" href="https://archivoorsini.com/colaboradoras">Colaboradoras</a>
+            <a class="item" href="https://archivoorsini.com/about">About</a>
+        </div>
+    </header>
+
+    <!-- ARTÍCULO Y PESTAÑA FUERA DEL CONTAINER -->
+    <article class="article">
+        <button onclick="minimizeArticle()" class="minimize-button">−</button>
+        <h1>Construye tu propio extrarradio</h1>
+        <p>
+            La primera escultura de La Unión y el Fénix, símbolo de un imperio inmobiliario que se extendió por
+            numerosas ciudades de España y el extranjero, se «deshizo» en 2018. En los años 40, en su apogeo, la
+            aseguradora realizó una maqueta promocional donde reunía, en una ciudad ficticia, una parte de todos los 86
+            inmuebles de su propiedad. Se llamó «Ciudad Fénix». A lo largo de avenidas, parques, colinas y paseos marítimos se
+            reúnen las construcciones destinadas a ser el emblema de sus respectivas ciudades. Está lo mejor de París,
+            de Barcelona, de Sevilla, de Valencia, de Tetuán. Es una ciudad compuesta sólo de hitos; casi todos,
+            además, caracterizados por la escultura del ave y el muchacho. Pero el conjunto resulta sorprendentemente
+            frío. Nada queda en él ajeno al control de la compañía: todo está asegurado. No hay lugar a la sorpresa,
+            porque no hay lugar a la catástrofe.
+        </p>
+        <p>
+            Paul Alglave, citado en un libro de 1944 de La Unión y el Fénix, dice que «el seguro es, precisamente, lo
+            contrario del juego». Presentamos aquí, por lo tanto, lo contrario al seguro: un juego. A partir de una
+            tirada de postales editada por la compañía en 1949 donde aparecen diferentes vistas de la maqueta de Ciudad
+            Fénix, hemos intentado recrear la urbe ficticia en 3D, abriéndola al paseo, a la exploración y al encuentro
+            virtual. Para ello ha sido necesario, en primer lugar, reconstruir el patrimonio inmobiliario de la
+            aseguradora en los años 40, e identificar y documentar cada uno de los edificios reales presentes en Ciudad
+            Fénix. Jugando con la fantasía grosera de la ciudad-monopolio queremos pensar otras formas de organizar el
+            espacio.
+        </p>
+        <p>
+            Este juego ha sido realizado por Clara Harguindey y Juan de Salas.
+        </p>
+    </article>
+
+    <button class="btn article-tab" onclick="restoreArticle()" style="display: none;">
+        <span>info</span>
+    </button>
+
+    <button class="btn btn-primary" id="downloadBtn">
+        descargar imagen
+    </button>
+
     <div class="container">
         <div class="header">
-            <img src="./img/titulo.png" alt="Contruye tu propio extrarradio"/>
+            <img src="./img/titulo.png" alt="Construye tu propio extrarradio" />
         </div>
 
         <div class="main-content">
@@ -21,24 +86,12 @@
                     <div class="gallery-grid" id="galleryGrid">
                     </div>
                 </div>
-
-                <div class="instructions">
-                </div>
             </div>
 
             <div class="right-panel">
                 <div class="canvas-container">
                     <div class="drop-zone" id="dropZone">
                     </div>
-                </div>
-
-                <div class="controls">
-                    <button class="btn btn-primary" id="downloadBtn">
-                        descargar
-                    </button>
-                    <button class="btn btn-secondary" id="clearBtn">
-                        reiniciar
-                    </button>
                 </div>
             </div>
         </div>

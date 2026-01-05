@@ -1,3 +1,10 @@
+/* ==================== FUENTES ==================== */
+@font-face {
+  font-family: "Sans";
+  src: url("./fonts/FreeSans.otf");
+}
+
+/* ==================== ESTILOS GLOBALES ==================== */
 * {
   margin: 0;
   padding: 0;
@@ -5,19 +12,155 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Sans";
   min-height: 100vh;
-  padding: 20px;
   background: #f8f9fa;
 }
 
+a {
+  text-decoration: none;
+  color: #a4a4a4;
+  font-size: 13px;
+}
+
+/* ==================== NAVEGACIÓN ==================== */
+nav {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  top: 0;
+  padding: 8px 16px;
+  background-color: white;
+  z-index: 6;
+  color: black;
+}
+
+.title {
+  color: black;
+}
+
+.item-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+li {
+  list-style: none;
+  margin-left: 1rem;
+}
+
+.menuButton {
+  display: none;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+
+.hidden-menu {
+  position: fixed;
+  flex-direction: column;
+  align-content: flex-end;
+  width: 100%;
+  z-index: 5;
+  transition: 1s;
+  display: none;
+  top: 34px;
+}
+
+.hidden-menu .item {
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: var(--darkgray);
+  padding: 8px 16px;
+  margin-bottom: 2px;
+  background-color: white;
+}
+
+/* ==================== ARTÍCULO ==================== */
+.article {
+  position: fixed;
+  font-size: 13px;
+  z-index: 1;
+  top: 50px;
+  left: 16px;
+  width: 25%;
+  background: white;
+}
+
+h1 {
+  font-size: 13px;
+  font-weight: 400;
+  padding: 8px;
+  background: white;
+  border-bottom: 2px solid #e5e5e5;
+  margin: 0;
+}
+
+p {
+  padding: 8px;
+  margin: 0;
+}
+
+.minimize-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 10px;
+  background: white;
+}
+
+.minimize-button:hover {
+  background: #f0f0f0;
+}
+
+/* ==================== PESTAÑA MINIMIZADA Y BOTÓN DESCARGAR ==================== */
+#downloadBtn,
+.article-tab {
+  position: fixed;
+  z-index: 10000;
+  right: 20px;
+  bottom: 20px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  background: #a4a4a4;
+  color: black;
+  transition: all 0.3s;
+}
+
+.article-tab {
+  right: 180px;
+}
+
+#downloadBtn:hover,
+.article-tab:hover {
+  background: #8c8c8c;
+  transform: translateY(-2px);
+}
+
+.controls {
+  display: none;
+}
+
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
 .container {
   margin: 0 auto;
   overflow: hidden;
 }
 
 .header img {
-  height: 200px;
+  margin-top: 36px;
+  height: 180px;
   max-width: 100%;
 }
 
@@ -37,6 +180,7 @@ body {
   gap: 30px;
 }
 
+/* ==================== PANEL IZQUIERDO - GALERÍA ==================== */
 .left-panel {
   display: flex;
   flex-direction: column;
@@ -65,6 +209,7 @@ body {
   max-height: 600px;
 }
 
+/* ==================== ELEMENTOS DE LA GALERÍA ==================== */
 .grid-item {
   position: absolute;
   display: flex;
@@ -93,6 +238,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
+/* Posiciones de elementos en la rejilla */
 .item-1 {
   left: 3%;
   top: 9%;
@@ -123,77 +269,66 @@ body {
   width: 14%;
   height: 34%;
 }
-
 .item-6 {
   left: 62%;
   top: 0;
   width: 22%;
   height: 34%;
 }
-
 .item-7 {
   left: 84%;
   top: 6%;
   width: 12%;
   height: 15%;
 }
-
 .item-8 {
   left: 2%;
   top: 30%;
   width: 13%;
   height: 16%;
 }
-
 .item-9 {
   left: 13%;
   top: 25%;
   width: 18%;
   height: 24%;
 }
-
 .item-10 {
   left: 28%;
   top: 19%;
   width: 31%;
   height: 41%;
 }
-
 .item-11 {
   left: 49%;
   top: 30%;
   width: 34%;
   height: 15%;
 }
-
 .item-12 {
   left: 3%;
   top: 44%;
   width: 10%;
   height: 15%;
 }
-
 .item-13 {
   left: 13%;
   top: 36%;
   width: 18%;
   height: 24%;
 }
-
 .item-14 {
   left: 28%;
   top: 41%;
   width: 24%;
   height: 23%;
 }
-
 .item-15 {
   left: 50%;
   top: 39%;
   width: 12%;
   height: 20%;
 }
-
 .item-16 {
   left: 65%;
   top: 27%;
@@ -206,70 +341,60 @@ body {
   width: 23%;
   height: 18%;
 }
-
 .item-18 {
   left: 2%;
   top: 54%;
   width: 15%;
   height: 26%;
 }
-
 .item-19 {
   left: 29%;
   top: 53%;
   width: 25%;
   height: 30%;
 }
-
 .item-20 {
   left: 51%;
   top: 58%;
   width: 13%;
   height: 20%;
 }
-
 .item-21 {
   left: 56%;
   top: 41%;
   width: 30%;
   height: 24%;
 }
-
 .item-22 {
   left: 15%;
   top: 42%;
   width: 14%;
   height: 28%;
 }
-
 .item-23 {
   left: 15%;
   top: 56%;
   width: 14%;
   height: 23%;
 }
-
 .item-24 {
   left: 77%;
   top: 40%;
   width: 25%;
   height: 18%;
 }
-
 .item-25 {
   left: 54%;
   top: 54%;
   width: 37%;
   height: 21%;
 }
-
 .item-26 {
   left: 76%;
   top: 53%;
   width: 28%;
   height: 20%;
 }
-
 .item-27 {
   left: 2%;
   top: 81%;
@@ -313,10 +438,19 @@ body {
   height: 31%;
 }
 
+.instructions {
+  padding: 15px;
+  font-size: 0.9em;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ==================== PANEL DERECHO - CANVAS ==================== */
 .right-panel {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 0 20px;
 }
 
 .canvas-container {
@@ -345,6 +479,7 @@ body {
   background-color: #ccc;
 }
 
+/* ==================== ELEMENTOS SOLTADOS ==================== */
 .dropped-element {
   position: absolute;
   cursor: move;
@@ -367,6 +502,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(42, 42, 42, 0.2));
 }
 
+/* ==================== CONTROLES DE ELEMENTOS ==================== */
 .delete-btn {
   position: absolute;
   top: -10px;
@@ -419,13 +555,12 @@ body {
   font-weight: bold;
 }
 
-.dropped-element:hover .delete-btn,
-.dropped-element.selected .delete-btn,
 .dropped-element:hover .resize-handle,
 .dropped-element.selected .resize-handle {
   display: flex;
 }
 
+/* ==================== BOTONES DE CONTROL ==================== */
 .controls {
   display: flex;
   gap: 15px;
@@ -433,7 +568,6 @@ body {
 }
 
 .btn {
-  padding: 15px 30px;
   font-size: 14px;
   border: none;
   cursor: pointer;
@@ -446,18 +580,7 @@ body {
   color: black;
 }
 
-.btn-secondary {
-  background: #f1f2f6;
-  color: red;
-}
-
-.instructions {
-  padding: 15px;
-  font-size: 0.9em;
-  color: #555;
-  line-height: 1.6;
-}
-
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 1400px) {
   .main-content {
     grid-template-columns: 1fr;
@@ -469,6 +592,25 @@ body {
 
   .drop-zone {
     height: 500px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .item-wrapper {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+  }
+
+  .article {
+    display: none;
+    width: 100%;
+    background: white;
+    position: absolute;
+    top: 34px;
+    margin: 0;
   }
 }
 
@@ -492,10 +634,5 @@ body {
 
   .drop-zone {
     height: 400px;
-  }
-
-  .btn {
-    padding: 12px 20px;
-    font-size: 1em;
   }
 }
