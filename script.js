@@ -145,7 +145,6 @@ function createDroppedElement(data, x, y) {
   makeResizableByHandle(element);
 }
 
-// Hacer elemento arrastrable dentro del canvas
 function makeDraggable(element) {
   const data = elementData.get(element);
 
@@ -178,6 +177,11 @@ function makeDraggable(element) {
 
   // TOUCH (móvil)
   element.addEventListener("touchstart", (e) => {
+    // SI HAY UN GHOST ACTIVO, IGNORAR ESTE TOUCHSTART
+    if (touchGhost) {
+      return;
+    }
+    
     if (e.target.classList.contains("delete-btn")) return;
     if (e.target.classList.contains("resize-handle")) return;
 
