@@ -513,7 +513,7 @@ li {
   cursor: nwse-resize;
   display: none;
   z-index: 11;
-  min-width: 44px; 
+  min-width: 44px;
   min-height: 44px;
 }
 
@@ -598,25 +598,24 @@ li {
     font-size: 11px;
   }
 
-  /* Botones más grandes en móvil */
   .delete-btn,
   .resize-handle {
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
   }
 
   .delete-btn {
-    font-size: 24px;
-    top: -15px;
-    right: -15px;
+    font-size: 20px;
+    top: -12px;
+    right: -12px;
   }
 
   .resize-handle {
-    bottom: -15px;
-    right: -15px;
+    bottom: -12px;
+    right: -12px;
   }
 
   .resize-handle::before {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
