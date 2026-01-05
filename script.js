@@ -270,7 +270,7 @@ downloadBtn.addEventListener("click", async () => {
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.download = `composicion-vintage-${Date.now()}.png`;
+      link.download = `extrarradio-${Date.now()}.png`;
       link.href = url;
       link.click();
       URL.revokeObjectURL(url);
@@ -329,3 +329,173 @@ const restoreArticle = () => {
     tab.style.display = "none";
   }
 };
+
+// ==== SOPORTE TÁCTIL PARA MÓVIL ====
+
+// Touch events para la galería
+elements.forEach((element, index) => {
+  const div = galleryGrid.children[index];
+  
+  div.addEventListener('touchstart', handleTouchStart, { passive: false });
+  div.addEventListener('touchmove', handleTouchMove, { passive: false });
+  div.addEventListener('touchend', handleTouchEnd, { passive: false });
+});
+
+let touchDragData = null;
+let touchGhost = null;
+
+function handleTouchStart(e) {
+  e.preventDefault();
+  
+  touchDragData = {
+    name: e.currentTarget.dataset.elementName,
+    src: e.currentTarget.dataset.elementSrc,
+  };
+  
+  // Crear elemento visual que sigue el dedo
+  touchGhost = document.createElement('div');
+  touchGhost.style.position = 'fixed';
+  touchGhost.style.pointerEvents = 'none';
+  touchGhost.style.zIndex = '10000';
+  touchGhost.style.width = '80px';
+  touchGhost.style.height = '80px';
+  touchGhost.style.opacity = '0.7';
+  touchGhost.innerHTML = `<img src="${touchDragData.src}" style="width:100%; height:100%; object-fit:contain;">`;
+  
+  document.body.appendChild(touchGhost);
+  
+  const touch = e.touches[0];
+  touchGhost.style.left = (touch.clientX - 40) + 'px';
+  touchGhost.style.top = (touch.clientY - 40) + 'px';
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  
+  if (!touchGhost) return;
+  
+  const touch = e.touches[0];
+  touchGhost.style.left = (touch.clientX - 40) + 'px';
+  touchGhost.style.top = (touch.clientY - 40) + 'px';
+  
+  // Verificar si está sobre el drop zone
+  const dropRect = dropZone.getBoundingClientRect();
+  if (
+    touch.clientX >= dropRect.left &&
+    touch.clientX <= dropRect.right &&
+    touch.clientY >= dropRect.top &&
+    touch.clientY <= dropRect.bottom
+  ) {
+    dropZone.classList.add('drag-over');
+  } else {
+    dropZone.classList.remove('drag-over');
+  }
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  
+  if (touchGhost) {
+    touchGhost.remove();
+    touchGhost = null;
+  }
+  
+  dropZone.classList.remove('drag-over');
+  
+  if (!touchDragData) return;
+  
+  const touch = e.changedTouches[0];
+  const dropRect = dropZone.getBoundingClientRect();
+  
+  if (
+    touch.clientX >= dropRect.left &&
+    touch.clientX <= dropRect.right &&
+    touch.clientY >= dropRect.top &&
+    touch.clientY <= dropRect.bottom
+  ) {
+    const x = touch.clientX - dropRect.left - 60;
+    const y = touch.clientY - dropRect.top - 60;
+    createDroppedElement(touchDragData, x, y);
+  }
+  
+  touchDragData = null;
+}
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let currentX, currentY, initialX, initialY;
+
+  element.addEventListener("mousedown", (e) => {
+    if (e.target.classList.contains("delete-btn")) return;
+    if (e.target.classList.contains("resize-handle")) return;
+
+    isDragging = true;
+    element.classList.add("selected");
+
+    const rect = element.getBoundingClientRect();
+    const parentRect = dropZone.getBoundingClientRect();
+
+    initialX = rect.left - parentRect.left;
+    initialY = rect.top - parentRect.top;
+    currentX = e.clientX;
+    currentY = e.clientY;
+
+    e.preventDefault();
+  });
+
+  element.addEventListener("touchstart", (e) => {
+    if (e.target.classList.contains("delete-btn")) return;
+    if (e.target.classList.contains("resize-handle")) return;
+
+    isDragging = true;
+    element.classList.add("selected");
+
+    const touch = e.touches[0];
+    const rect = element.getBoundingClientRect();
+    const parentRect = dropZone.getBoundingClientRect();
+
+    initialX = rect.left - parentRect.left;
+    initialY = rect.top - parentRect.top;
+    currentX = touch.clientX;
+    currentY = touch.clientY;
+
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    const dx = e.clientX - currentX;
+    const dy = e.clientY - currentY;
+
+    element.style.left = initialX + dx + "px";
+    element.style.top = initialY + dy + "px";
+  });
+
+  document.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    const dx = touch.clientX - currentX;
+    const dy = touch.clientY - currentY;
+
+    element.style.left = initialX + dx + "px";
+    element.style.top = initialY + dy + "px";
+
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      element.classList.remove("selected");
+    }
+  });
+
+  document.addEventListener("touchend", () => {
+    if (isDragging) {
+      isDragging = false;
+      element.classList.remove("selected");
+    }
+  });
+}
