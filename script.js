@@ -91,6 +91,13 @@ dropZone.addEventListener("drop", (e) => {
   draggedData = null;
 });
 
+// Variables globales para controlar qué elemento se está manipulando
+let currentDraggingElement = null;
+let currentResizingElement = null;
+
+// WeakMap para almacenar datos específicos de cada elemento
+const elementData = new WeakMap();
+
 // Crear elemento soltado en el canvas
 let elementCounter = 0;
 function createDroppedElement(data, x, y) {
@@ -109,6 +116,16 @@ function createDroppedElement(data, x, y) {
   `;
 
   dropZone.appendChild(element);
+  
+  // Inicializar datos del elemento
+  elementData.set(element, {
+    currentX: 0,
+    currentY: 0,
+    initialX: 0,
+    initialY: 0,
+    touchStartTime: 0,
+    hasMoved: false
+  });
   
   // Añadir eventos táctiles al botón delete
   const deleteBtn = element.querySelector('.delete-btn');
@@ -129,19 +146,14 @@ function createDroppedElement(data, x, y) {
 
 // Hacer elemento arrastrable dentro del canvas
 function makeDraggable(element) {
-  let isDragging = false;
-  let currentX, currentY, initialX, initialY;
-  let dragStartTime = 0;
-  let touchStartTime = 0;
-  let hasMoved = false;
+  const data = elementData.get(element);
 
   // MOUSE (desktop)
-  const onMouseDown = (e) => {
+  element.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("delete-btn")) return;
     if (e.target.classList.contains("resize-handle")) return;
 
-    isDragging = true;
-    dragStartTime = Date.now();
+    currentDraggingElement = element;
     
     // Remover selected de todos los elementos
     document.querySelectorAll('.dropped-element').forEach(el => {
@@ -155,109 +167,128 @@ function makeDraggable(element) {
     const rect = element.getBoundingClientRect();
     const parentRect = dropZone.getBoundingClientRect();
 
-    initialX = rect.left - parentRect.left;
-    initialY = rect.top - parentRect.top;
-    currentX = e.clientX;
-    currentY = e.clientY;
+    data.initialX = rect.left - parentRect.left;
+    data.initialY = rect.top - parentRect.top;
+    data.currentX = e.clientX;
+    data.currentY = e.clientY;
 
     e.preventDefault();
-  };
-
-  const onMouseMove = (e) => {
-    if (!isDragging) return;
-
-    const dx = e.clientX - currentX;
-    const dy = e.clientY - currentY;
-
-    element.style.left = initialX + dx + "px";
-    element.style.top = initialY + dy + "px";
-  };
-
-  const onMouseUp = () => {
-    if (isDragging) {
-      isDragging = false;
-    }
-  };
+  });
 
   // TOUCH (móvil)
-  const onTouchStart = (e) => {
-    // Si toca el botón delete o resize, no hacer nada
+  element.addEventListener("touchstart", (e) => {
     if (e.target.classList.contains("delete-btn")) return;
     if (e.target.classList.contains("resize-handle")) return;
 
-    touchStartTime = Date.now();
-    hasMoved = false;
+    data.touchStartTime = Date.now();
+    data.hasMoved = false;
     
     const touch = e.touches[0];
     const rect = element.getBoundingClientRect();
     const parentRect = dropZone.getBoundingClientRect();
 
-    initialX = rect.left - parentRect.left;
-    initialY = rect.top - parentRect.top;
-    currentX = touch.clientX;
-    currentY = touch.clientY;
+    data.initialX = rect.left - parentRect.left;
+    data.initialY = rect.top - parentRect.top;
+    data.currentX = touch.clientX;
+    data.currentY = touch.clientY;
 
     e.preventDefault();
-  };
+  }, { passive: false });
+}
 
-  const onTouchMove = (e) => {
-    if (!e.touches[0]) return;
+// Event listeners globales para mouse y touch
+document.addEventListener("mousemove", (e) => {
+  if (!currentDraggingElement) return;
+  
+  const data = elementData.get(currentDraggingElement);
+  const dx = e.clientX - data.currentX;
+  const dy = e.clientY - data.currentY;
+
+  currentDraggingElement.style.left = data.initialX + dx + "px";
+  currentDraggingElement.style.top = data.initialY + dy + "px";
+});
+
+document.addEventListener("touchmove", (e) => {
+  if (!e.touches[0]) return;
+  
+  // Buscar el elemento que está siendo tocado
+  const touch = e.touches[0];
+  const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  if (!touchedElement) return;
+  
+  const droppedElement = touchedElement.closest('.dropped-element');
+  if (!droppedElement) return;
+  
+  const data = elementData.get(droppedElement);
+  if (!data) return;
+  
+  const dx = touch.clientX - data.currentX;
+  const dy = touch.clientY - data.currentY;
+
+  // Si se movió más de 5px, considerarlo drag
+  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+    data.hasMoved = true;
+    currentDraggingElement = droppedElement;
     
-    const touch = e.touches[0];
-    const dx = touch.clientX - currentX;
-    const dy = touch.clientY - currentY;
+    droppedElement.style.left = data.initialX + dx + "px";
+    droppedElement.style.top = data.initialY + dy + "px";
+  }
 
-    // Si se movió más de 5px, considerarlo drag
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-      hasMoved = true;
-      isDragging = true;
-      
-      element.style.left = initialX + dx + "px";
-      element.style.top = initialY + dy + "px";
-    }
+  e.preventDefault();
+}, { passive: false });
 
-    e.preventDefault();
-  };
+document.addEventListener("mouseup", () => {
+  if (currentDraggingElement) {
+    currentDraggingElement = null;
+  }
+});
 
-  const onTouchEnd = (e) => {
-    const touchDuration = Date.now() - touchStartTime;
+document.addEventListener("touchend", (e) => {
+  if (!currentDraggingElement) {
+    // Buscar el elemento que fue tocado
+    const touch = e.changedTouches[0];
+    const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
     
-    // Si fue un tap rápido sin movimiento
-    if (!hasMoved && touchDuration < 300) {
-      // Toggle: si ya está selected, quitarlo; si no, ponerlo
-      if (element.classList.contains('selected')) {
-        element.classList.remove('selected');
-      } else {
-        // Remover selected de todos los demás
-        document.querySelectorAll('.dropped-element').forEach(el => {
-          el.classList.remove('selected');
-        });
-        element.classList.add('selected');
+    if (touchedElement) {
+      const droppedElement = touchedElement.closest('.dropped-element');
+      if (droppedElement) {
+        const data = elementData.get(droppedElement);
+        const touchDuration = Date.now() - data.touchStartTime;
+        
+        // Si fue un tap rápido sin movimiento
+        if (!data.hasMoved && touchDuration < 300) {
+          // Toggle: si ya está selected, quitarlo; si no, ponerlo
+          if (droppedElement.classList.contains('selected')) {
+            droppedElement.classList.remove('selected');
+          } else {
+            document.querySelectorAll('.dropped-element').forEach(el => {
+              el.classList.remove('selected');
+            });
+            droppedElement.classList.add('selected');
+          }
+        }
+        
+        data.hasMoved = false;
       }
-    } else if (hasMoved) {
+    }
+  } else {
+    const data = elementData.get(currentDraggingElement);
+    
+    if (data.hasMoved) {
       // Si fue un drag, mantener selected
       document.querySelectorAll('.dropped-element').forEach(el => {
-        if (el !== element) {
+        if (el !== currentDraggingElement) {
           el.classList.remove('selected');
         }
       });
-      element.classList.add('selected');
+      currentDraggingElement.classList.add('selected');
     }
     
-    isDragging = false;
-    hasMoved = false;
-  };
-
-  // Añadir listeners
-  element.addEventListener("mousedown", onMouseDown);
-  element.addEventListener("touchstart", onTouchStart, { passive: false });
-  
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("touchmove", onTouchMove, { passive: false });
-  
-  document.addEventListener("mouseup", onMouseUp);
-  document.addEventListener("touchend", onTouchEnd);
-}
+    data.hasMoved = false;
+    currentDraggingElement = null;
+  }
+});
 
 // Hacer elemento redimensionable con rueda
 function makeResizable(element) {
@@ -280,11 +311,11 @@ function makeResizableByHandle(element) {
   const handle = element.querySelector(".resize-handle");
   if (!handle) return;
 
-  let isResizing = false;
   let startX, startY, startWidth, startHeight;
 
-  const onMouseDown = (e) => {
-    isResizing = true;
+  // MOUSE (desktop)
+  handle.addEventListener("mousedown", (e) => {
+    currentResizingElement = element;
     startX = e.clientX;
     startY = e.clientY;
     startWidth = element.offsetWidth;
@@ -293,10 +324,11 @@ function makeResizableByHandle(element) {
     element.classList.add("selected");
     e.stopPropagation();
     e.preventDefault();
-  };
+  });
 
-  const onTouchStart = (e) => {
-    isResizing = true;
+  // TOUCH (móvil)
+  handle.addEventListener("touchstart", (e) => {
+    currentResizingElement = element;
     const touch = e.touches[0];
     startX = touch.clientX;
     startY = touch.clientY;
@@ -306,10 +338,10 @@ function makeResizableByHandle(element) {
     element.classList.add("selected");
     e.stopPropagation();
     e.preventDefault();
-  };
+  }, { passive: false });
 
-  const onMouseMove = (e) => {
-    if (!isResizing) return;
+  document.addEventListener("mousemove", (e) => {
+    if (currentResizingElement !== element) return;
 
     const deltaX = e.clientX - startX;
     const deltaY = e.clientY - startY;
@@ -319,10 +351,10 @@ function makeResizableByHandle(element) {
 
     element.style.width = newSize + "px";
     element.style.height = newSize + "px";
-  };
+  });
 
-  const onTouchMove = (e) => {
-    if (!isResizing) return;
+  document.addEventListener("touchmove", (e) => {
+    if (currentResizingElement !== element) return;
 
     const touch = e.touches[0];
     const deltaX = touch.clientX - startX;
@@ -335,39 +367,28 @@ function makeResizableByHandle(element) {
     element.style.height = newSize + "px";
 
     e.preventDefault();
-  };
+  }, { passive: false });
 
-  const onMouseUp = () => {
-    if (isResizing) {
-      isResizing = false;
+  document.addEventListener("mouseup", () => {
+    if (currentResizingElement === element) {
+      currentResizingElement = null;
       element.classList.remove("selected");
     }
-  };
+  });
 
-  const onTouchEnd = () => {
-    if (isResizing) {
-      isResizing = false;
+  document.addEventListener("touchend", () => {
+    if (currentResizingElement === element) {
+      currentResizingElement = null;
       element.classList.remove("selected");
     }
-  };
-
-  // MOUSE (desktop)
-  handle.addEventListener("mousedown", onMouseDown);
-  
-  // TOUCH (móvil)
-  handle.addEventListener("touchstart", onTouchStart, { passive: false });
-  
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("touchmove", onTouchMove, { passive: false });
-  
-  document.addEventListener("mouseup", onMouseUp);
-  document.addEventListener("touchend", onTouchEnd);
+  });
 }
 
 // Eliminar elemento
 function deleteElement(elementId) {
   const element = document.getElementById(elementId);
   if (element) {
+    elementData.delete(element);
     element.remove();
   }
 }
