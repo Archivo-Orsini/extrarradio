@@ -124,7 +124,8 @@ function createDroppedElement(data, x, y) {
     initialX: 0,
     initialY: 0,
     touchStartTime: 0,
-    hasMoved: false
+    hasMoved: false,
+    touchElement: null
   });
   
   // Añadir eventos táctiles al botón delete
@@ -180,6 +181,7 @@ function makeDraggable(element) {
     if (e.target.classList.contains("delete-btn")) return;
     if (e.target.classList.contains("resize-handle")) return;
 
+    // Guardar tiempo y establecer datos iniciales
     data.touchStartTime = Date.now();
     data.hasMoved = false;
     
@@ -191,6 +193,9 @@ function makeDraggable(element) {
     data.initialY = rect.top - parentRect.top;
     data.currentX = touch.clientX;
     data.currentY = touch.clientY;
+    
+    // Marcar este elemento como el candidato a ser arrastrado
+    data.touchElement = element;
 
     e.preventDefault();
   }, { passive: false });
@@ -226,26 +231,34 @@ document.addEventListener("touchmove", (e) => {
     return;
   }
   
-  // Si no hay elemento arrastrándose, buscar si se debe empezar a arrastrar
-  const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
-  if (!touchedElement) return;
-  
-  const droppedElement = touchedElement.closest('.dropped-element');
-  if (!droppedElement) return;
-  
-  const data = elementData.get(droppedElement);
-  if (!data) return;
-  
-  const dx = touch.clientX - data.currentX;
-  const dy = touch.clientY - data.currentY;
+  // Buscar si hay algún elemento que está siendo tocado y necesita empezar a moverse
+  const droppedElements = dropZone.querySelectorAll('.dropped-element');
+  for (let elem of droppedElements) {
+    const data = elementData.get(elem);
+    if (data && data.touchElement === elem && !currentDraggingElement) {
+      const dx = touch.clientX - data.currentX;
+      const dy = touch.clientY - data.currentY;
 
-  // Si se movió más de 5px, considerarlo drag
-  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-    data.hasMoved = true;
-    currentDraggingElement = droppedElement;
-    
-    droppedElement.style.left = data.initialX + dx + "px";
-    droppedElement.style.top = data.initialY + dy + "px";
+      // Si se movió más de 5px, empezar el drag
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        data.hasMoved = true;
+        currentDraggingElement = elem;
+        
+        // Remover selected de otros elementos
+        document.querySelectorAll('.dropped-element').forEach(el => {
+          if (el !== elem) {
+            el.classList.remove('selected');
+          }
+        });
+        elem.classList.add('selected');
+        
+        elem.style.left = data.initialX + dx + "px";
+        elem.style.top = data.initialY + dy + "px";
+        
+        e.preventDefault();
+        return;
+      }
+    }
   }
 
   e.preventDefault();
@@ -258,37 +271,35 @@ document.addEventListener("mouseup", () => {
 });
 
 document.addEventListener("touchend", (e) => {
-  if (!currentDraggingElement) {
-    // Buscar el elemento que fue tocado
-    const touch = e.changedTouches[0];
-    const touchedElement = document.elementFromPoint(touch.clientX, touch.clientY);
-    
-    if (touchedElement) {
-      const droppedElement = touchedElement.closest('.dropped-element');
-      if (droppedElement) {
-        const data = elementData.get(droppedElement);
-        const touchDuration = Date.now() - data.touchStartTime;
-        
-        // Si fue un tap rápido sin movimiento
-        if (!data.hasMoved && touchDuration < 300) {
-          // Toggle: si ya está selected, quitarlo; si no, ponerlo
-          if (droppedElement.classList.contains('selected')) {
-            droppedElement.classList.remove('selected');
-          } else {
-            document.querySelectorAll('.dropped-element').forEach(el => {
-              el.classList.remove('selected');
-            });
-            droppedElement.classList.add('selected');
-          }
+  // Limpiar todos los touchElement
+  const droppedElements = dropZone.querySelectorAll('.dropped-element');
+  for (let elem of droppedElements) {
+    const data = elementData.get(elem);
+    if (data && data.touchElement) {
+      const touchDuration = Date.now() - data.touchStartTime;
+      
+      // Si fue un tap en este elemento (sin movimiento y rápido)
+      if (data.touchElement === elem && !data.hasMoved && touchDuration < 300) {
+        // Toggle: si ya está selected, quitarlo; si no, ponerlo
+        if (elem.classList.contains('selected')) {
+          elem.classList.remove('selected');
+        } else {
+          document.querySelectorAll('.dropped-element').forEach(el => {
+            el.classList.remove('selected');
+          });
+          elem.classList.add('selected');
         }
-        
-        data.hasMoved = false;
       }
+      
+      data.touchElement = null;
+      data.hasMoved = false;
     }
-  } else {
+  }
+  
+  if (currentDraggingElement) {
     const data = elementData.get(currentDraggingElement);
     
-    if (data.hasMoved) {
+    if (data && data.hasMoved) {
       // Si fue un drag, mantener selected
       document.querySelectorAll('.dropped-element').forEach(el => {
         if (el !== currentDraggingElement) {
@@ -298,7 +309,9 @@ document.addEventListener("touchend", (e) => {
       currentDraggingElement.classList.add('selected');
     }
     
-    data.hasMoved = false;
+    if (data) {
+      data.hasMoved = false;
+    }
     currentDraggingElement = null;
   }
 });
@@ -575,7 +588,6 @@ function handleTouchEnd(e) {
   touchDragData = null;
 }
 
-// Añadir evento para cerrar botones al tocar el fondo
 dropZone.addEventListener('touchstart', (e) => {
   if (e.target === dropZone) {
     document.querySelectorAll('.dropped-element').forEach(el => {
