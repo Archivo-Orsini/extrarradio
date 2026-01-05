@@ -15,6 +15,13 @@ body {
   font-family: "Sans";
   min-height: 100vh;
   background: #f8f9fa;
+  overscroll-behavior: none; /* Prevenir scroll bounce en iOS */
+}
+
+/* Prevenir scroll mientras se arrastra */
+body.dragging {
+  overflow: hidden;
+  touch-action: none;
 }
 
 a {
@@ -95,6 +102,7 @@ li {
   color: black;
   font-size: 14px;
   transition: all 0.3s;
+  min-height: 44px; /* Mejor accesibilidad táctil */
 }
 
 #downloadBtn:hover {
@@ -176,6 +184,8 @@ li {
   background-repeat: no-repeat;
   background-position: center;
   max-height: 600px;
+  touch-action: pan-y; /* Permitir scroll vertical en la galería */
+  overflow-y: auto;
 }
 
 /* ==================== ELEMENTOS DE LA GALERÍA ==================== */
@@ -187,6 +197,7 @@ li {
   cursor: grab;
   transition: all 0.3s ease;
   padding: 5px;
+  touch-action: none; /* Prevenir gestos del navegador */
 }
 
 .grid-item:hover {
@@ -429,6 +440,7 @@ li {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  touch-action: none; /* Prevenir scroll en el canvas */
 }
 
 .drop-zone.drag-over {
@@ -441,6 +453,7 @@ li {
   cursor: move;
   user-select: none;
   transition: box-shadow 0.2s;
+  touch-action: none; /* Prevenir gestos del navegador */
 }
 
 .dropped-element:hover {
@@ -463,17 +476,19 @@ li {
   position: absolute;
   top: -10px;
   right: -10px;
-  width: 20px;
-  height: 20px;
+  width: 30px; /* Aumentado para móvil */
+  height: 30px; /* Aumentado para móvil */
   background: #ccc;
   color: white;
   border: 1px solid white;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 20px;
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  min-width: 44px; /* Tamaño mínimo táctil */
+  min-height: 44px;
 }
 
 .delete-btn:hover,
@@ -492,12 +507,14 @@ li {
   border: 1px solid white;
   bottom: -5px;
   right: -5px;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   background: #ccc;
   cursor: nwse-resize;
   display: none;
   z-index: 11;
+  min-width: 44px; 
+  min-height: 44px;
 }
 
 .resize-handle::before {
@@ -507,7 +524,7 @@ li {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -579,5 +596,27 @@ li {
 
   .header-right p {
     font-size: 11px;
+  }
+
+  /* Botones más grandes en móvil */
+  .delete-btn,
+  .resize-handle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .delete-btn {
+    font-size: 24px;
+    top: -15px;
+    right: -15px;
+  }
+
+  .resize-handle {
+    bottom: -15px;
+    right: -15px;
+  }
+
+  .resize-handle::before {
+    font-size: 16px;
   }
 }
