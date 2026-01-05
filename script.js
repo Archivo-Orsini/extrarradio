@@ -220,9 +220,12 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("touchmove", (e) => {
   if (!e.touches[0]) return;
   
+  if (touchGhost) {
+    return;
+  }
+  
   const touch = e.touches[0];
   
-  // Si ya hay un elemento siendo arrastrado, moverlo
   if (currentDraggingElement) {
     const data = elementData.get(currentDraggingElement);
     const dx = touch.clientX - data.currentX;
@@ -231,11 +234,10 @@ document.addEventListener("touchmove", (e) => {
     currentDraggingElement.style.left = data.initialX + dx + "px";
     currentDraggingElement.style.top = data.initialY + dy + "px";
     
-    e.preventDefault();
+    e.preventDefault(); 
     return;
   }
   
-  // Buscar si hay algún elemento que está siendo tocado y necesita empezar a moverse
   const droppedElements = dropZone.querySelectorAll('.dropped-element');
   for (let elem of droppedElements) {
     const data = elementData.get(elem);
@@ -259,13 +261,13 @@ document.addEventListener("touchmove", (e) => {
         elem.style.left = data.initialX + dx + "px";
         elem.style.top = data.initialY + dy + "px";
         
-        e.preventDefault();
+        e.preventDefault(); // SOLO prevenir cuando empieza el drag
         return;
       }
     }
   }
 
-  e.preventDefault();
+  // NO prevenir por defecto si no hay drag - permite scroll
 }, { passive: false });
 
 document.addEventListener("mouseup", () => {
